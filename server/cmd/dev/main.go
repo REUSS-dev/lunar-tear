@@ -92,13 +92,11 @@ func main() {
 	grpcDB := flag.String("grpc.db", "db/game.db", "lunar-tear SQLite database path")
 	grpcOctoURL := flag.String("grpc.octo-url", "", "Octo CDN base URL passed to lunar-tear (default: derived from cdn.public-addr)")
 	grpcAuthURL := flag.String("grpc.auth-url", "", "auth server base URL passed to lunar-tear (default: derived from auth.listen)")
+	noRegister := flag.Bool("grpc.no-register", false, "Disallow new account registrations for clients, when true. Default = false")
 
 	// admin webhook is opt-in; empty leaves lunar-tear's own default in place
 	// (the listener still only binds if LUNAR_ADMIN_TOKEN is set in the env).
 	adminListen := flag.String("admin.listen", "", "lunar-tear admin webhook listen address (host:port). Empty = leave default; webhook only binds when LUNAR_ADMIN_TOKEN is set in the env.")
-
-	// no-register flag for controlled server access (lunar-tear)
-	noRegister := flag.Bool("no-register", false, "Disallow new account registrations for clients, when true. Default = false")
 
 	// dev utility output config
 	noColor := flag.Bool("no-color", false, "disable colored output")
