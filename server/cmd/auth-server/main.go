@@ -8,6 +8,8 @@ import (
 	"log"
 	"net/http"
 
+	"lunar-tear/server/internal/auth"
+
 	_ "modernc.org/sqlite"
 )
 
@@ -33,12 +35,12 @@ func main() {
 	}
 	defer db.Close()
 
-	store, err := NewAuthStore(db)
+	store, err := auth.NewAuthStore(db)
 	if err != nil {
 		log.Fatalf("init auth store: %v", err)
 	}
 
-	tok := NewTokenService(hmacSecret)
+	tok := auth.NewTokenService(hmacSecret)
 	h := NewHandlers(store, tok)
 
 	mux := http.NewServeMux()
