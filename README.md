@@ -323,12 +323,18 @@ This tool creates a fresh account in main db and new account in Auth Server stor
 A primary mean of registering new accounts when `--no-register` flag is passed to lunar-tear for controlled server access.
 
 ```bash
-go run ./cmd/register-account --name "AccountName" --password "AccountPassword" --platform "android"/"ios"
+go run ./cmd/register-account --name "AccountName" --password "AccountPassword" --platform "android"
 ```
 
-`--platform` flag can be omitted, default platform is assumed `android`.
+| Flag         | Default      | Description                                                  |
+| ------------ | ------------ | ------------------------------------------------------------ |
+| `--name`     | *(required)* | Auth Server account nickname to be registered                |
+| `--password` | *(required)* | Auth Server account password to be registered                |
+| `--platform` | `android`    | Platform of new user account (`android` or `ios`)            |
+| `--db`       | `db/game.db` | SQLite main database path                                    |
+| `--auth-db`  | `db/auth.db` | SQLite Auth Server database path                             |
 
-This only sets the nickname of Auth Server account, a player can choose their in-game nickname upon first login.
+This only sets the nickname of Auth Server account, a player can choose their in-game nickname upon first login!
 
 ## ⚠️ Legal Disclaimer
 
