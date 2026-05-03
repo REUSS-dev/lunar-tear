@@ -173,9 +173,9 @@ make dev ARGS="--grpc.listen 0.0.0.0:9000 --grpc.public-addr 10.0.2.2:9000"
 | `--grpc.public-addr`  | `10.0.2.2:8003`    | lunar-tear externally-reachable addr     |
 | `--grpc.octo-url`     | `http://10.0.2.2:8080` | Octo CDN base URL passed to lunar-tear |
 | `--grpc.auth-url`     | `http://localhost:3000` | auth server base URL passed to lunar-tear |
+| `--grpc.no-register`  | `false`            | disable new user registrations (only already registered users can connect). |
 | `--admin.listen`      | *(empty)*          | lunar-tear admin webhook bind. Empty = leave default; webhook only binds when `LUNAR_ADMIN_TOKEN` is set in the env. |
 | `--no-color`          | `false`            | disable colored output                   |
-| `--grpc.no-register`  | `false`            | disable new user registrations (only already registered users can connect). |
 
 ### Ports
 
@@ -272,6 +272,7 @@ All targets run from the `server/` directory.
 | `make build-all` | Build all service binaries to `bin/`                   |
 | `make build-import` | Build the import-snapshot tool                     |
 | `make build-claim-account` | Build the claim-account tool                |
+| `make build-register-account` | Build the register-account tool           |
 | `make clean`   | Remove the `bin/` directory                              |
 | `make dev`     | Run all three services with one command                  |
 | `make migrate` | Run goose migrations on `db/game.db`                    |
