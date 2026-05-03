@@ -97,7 +97,12 @@ func main() {
 	// (the listener still only binds if LUNAR_ADMIN_TOKEN is set in the env).
 	adminListen := flag.String("admin.listen", "", "lunar-tear admin webhook listen address (host:port). Empty = leave default; webhook only binds when LUNAR_ADMIN_TOKEN is set in the env.")
 
+	// no-register flag for controlled server access (lunar-tear)
+	noRegister := flag.Bool("no-register", false, "Disallow new account registrations for clients, when true. Default = false")
+
+	// dev utility output config
 	noColor := flag.Bool("no-color", false, "disable colored output")
+
 	flag.Parse()
 
 	if *grpcOctoURL == "" {
@@ -143,7 +148,7 @@ func main() {
 			label: "grpc",
 			color: colorYellow,
 			cmd: exec.CommandContext(ctx, filepath.Join("bin", "lunar-tear"+ext),
-				grpcArgs(*grpcListen, *grpcPublicAddr, *grpcDB, *grpcOctoURL, *grpcAuthURL, *adminListen)...,
+				grpcArgs(*grpcListen, *grpcPublicAddr, *grpcDB, *grpcOctoURL, *grpcAuthURL, *adminListen, *noRegister)...,
 			),
 		},
 	}
@@ -204,7 +209,7 @@ func prefixLines(wg *sync.WaitGroup, prefix string, r io.Reader) {
 // grpcArgs assembles the argv for the lunar-tear subprocess. The admin flag
 // is appended only when --admin.listen was supplied so we don't override
 // lunar-tear's own default when the operator hasn't opted in.
-func grpcArgs(listen, publicAddr, db, octoURL, authURL, adminListen string) []string {
+func grpcArgs(listen, publicAddr, db, octoURL, authURL, adminListen string, noRegister bool) []string {
 	args := []string{
 		"--listen", listen,
 		"--public-addr", publicAddr,
@@ -212,8 +217,13 @@ func grpcArgs(listen, publicAddr, db, octoURL, authURL, adminListen string) []st
 		"--octo-url", octoURL,
 		"--auth-url", authURL,
 	}
+
 	if adminListen != "" {
 		args = append(args, "--admin-listen", adminListen)
+	}
+
+	if noRegister {
+		args = append(args, "--no-register")
 	}
 	return args
 }
