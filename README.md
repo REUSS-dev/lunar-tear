@@ -173,7 +173,7 @@ make dev ARGS="--grpc.listen 0.0.0.0:9000 --grpc.public-addr 10.0.2.2:9000"
 | `--grpc.public-addr`  | `10.0.2.2:8003`    | lunar-tear externally-reachable addr     |
 | `--grpc.octo-url`     | `http://10.0.2.2:8080` | Octo CDN base URL passed to lunar-tear |
 | `--grpc.auth-url`     | `http://localhost:3000` | auth server base URL passed to lunar-tear |
-| `--grpc.no-register`  | `false`            | disable new user registrations (only already registered users can connect). |
+| `--no-register`       | `false`            | disable new user registrations (only already registered users can connect). |
 | `--admin.listen`      | *(empty)*          | lunar-tear admin webhook bind. Empty = leave default; webhook only binds when `LUNAR_ADMIN_TOKEN` is set in the env. |
 | `--no-color`          | `false`            | disable colored output                   |
 
@@ -196,7 +196,7 @@ make dev ARGS="--grpc.listen 0.0.0.0:9000 --grpc.public-addr 10.0.2.2:9000"
 | `--db`           | `db/game.db`      | SQLite database path                                 |
 | `--auth-url`     | *(empty)*         | Auth server base URL (e.g. `http://localhost:3000`)  |
 | `--admin-listen` | `127.0.0.1:8082`  | Admin webhook listen address. Only binds when `LUNAR_ADMIN_TOKEN` is set. |
-| `--no-register`  | `false`           | disable new user registrations (only already registered users can connect). |
+| `--no-register`  | `false`           | Disable new user registrations (only already registered users can connect). |
 
 ### Live Master Data Reload
 
@@ -311,11 +311,12 @@ The `--secret` flag accepts a hex-encoded HMAC key. If omitted, a random key is 
 
 ### Flags
 
-| Flag       | Default         | Description                                  |
-| ---------- | --------------- | -------------------------------------------- |
-| `--listen` | `0.0.0.0:3000`  | HTTP listen address (host:port)              |
-| `--db`     | `db/auth.db`    | SQLite database path for auth users          |
-| `--secret` | *(generated)*   | Hex-encoded HMAC secret for token signing    |
+| Flag             | Default         | Description                                  |
+| ---------------- | --------------- | -------------------------------------------- |
+| `--listen`       | `0.0.0.0:3000`  | HTTP listen address (host:port)              |
+| `--db`           | `db/auth.db`    | SQLite database path for auth users          |
+| `--secret`       | *(generated)*   | Hex-encoded HMAC secret for token signing    |
+| `--no-register`  | `false`         | Disable new user registrations (only already registered users can log in). |
 
 ## Create account
 

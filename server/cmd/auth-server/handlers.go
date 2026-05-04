@@ -40,12 +40,13 @@ var oauthRedirectTmpl = template.Must(template.New("oauthRedirect").Parse(
 `))
 
 type Handlers struct {
-	store *auth.AuthStore
-	tok   *auth.TokenService
+	store      *auth.AuthStore
+	tok        *auth.TokenService
+	noRegister bool
 }
 
-func NewHandlers(store *auth.AuthStore, tok *auth.TokenService) *Handlers {
-	return &Handlers{store: store, tok: tok}
+func NewHandlers(store *auth.AuthStore, tok *auth.TokenService, noRegister bool) *Handlers {
+	return &Handlers{store: store, tok: tok, noRegister: noRegister}
 }
 
 type loginPageData struct {
@@ -145,6 +146,11 @@ func (h *Handlers) oauthPost(w http.ResponseWriter, r *http.Request) {
 
 	switch action {
 	case "register":
+		if h.noRegister {
+			renderErr("This server does not accept user registrations.")
+			return
+		}
+
 		user, err = h.store.CreateUser(username, password)
 		if err == auth.ErrUserExists {
 			renderErr("Username is already taken.")

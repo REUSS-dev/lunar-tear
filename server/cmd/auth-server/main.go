@@ -17,6 +17,7 @@ func main() {
 	listen := flag.String("listen", "0.0.0.0:3000", "HTTP listen address (host:port)")
 	dbPath := flag.String("db", "db/auth.db", "SQLite database path for auth users")
 	secret := flag.String("secret", "", "HMAC secret for tokens (auto-generated if empty)")
+	noRegister := flag.Bool("no-register", false, "Disallow new account registrations for clients, when present. Default = false")
 	flag.Parse()
 
 	hmacSecret := []byte(*secret)
@@ -41,7 +42,7 @@ func main() {
 	}
 
 	tok := auth.NewTokenService(hmacSecret)
-	h := NewHandlers(store, tok)
+	h := NewHandlers(store, tok, *noRegister)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", h.HandleOAuth)
