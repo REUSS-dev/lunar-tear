@@ -12,6 +12,7 @@ import (
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/peer"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -23,19 +24,30 @@ import (
 
 type UserServiceServer struct {
 	pb.UnimplementedUserServiceServer
-	users    store.UserRepository
-	sessions store.SessionRepository
-	authURL  string
+	users      store.UserRepository
+	sessions   store.SessionRepository
+	authURL    string
+	noRegister bool
 }
 
-func NewUserServiceServer(users store.UserRepository, sessions store.SessionRepository, authURL string) *UserServiceServer {
+func NewUserServiceServer(users store.UserRepository, sessions store.SessionRepository, authURL string, noRegister bool) *UserServiceServer {
 	if authURL != "" && !strings.Contains(authURL, "://") {
 		authURL = "http://" + authURL
 	}
-	return &UserServiceServer{users: users, sessions: sessions, authURL: authURL}
+	return &UserServiceServer{users: users, sessions: sessions, authURL: authURL, noRegister: noRegister}
 }
 
 func (s *UserServiceServer) RegisterUser(ctx context.Context, req *pb.RegisterUserRequest) (*pb.RegisterUserResponse, error) {
+	if s.noRegister {
+		ip := "invalid"
+
+		if p, ok := peer.FromContext(ctx); ok {
+			ip = p.Addr.String()
+		}
+
+		return nil, fmt.Errorf("Denied user registration: ip=%s uuid=%s", ip, req.Uuid)
+	}
+
 	platform := model.ClientPlatformFromContext(ctx)
 	userId, err := s.users.CreateUser(req.Uuid, platform)
 	if err != nil {
