@@ -89,11 +89,14 @@ func (s *UserServiceServer) GameStart(ctx context.Context, _ *emptypb.Empty) (*p
 
 func (s *UserServiceServer) TransferUser(ctx context.Context, req *pb.TransferUserRequest) (*pb.TransferUserResponse, error) {
 	platform := model.ClientPlatformFromContext(ctx)
+
 	log.Printf("[UserService] TransferUser: platform=%s", platform)
-	userId, err := s.users.CreateUser(req.Uuid, platform)
+
+	userId, err := s.users.GetUserByUUID(req.Uuid)
 	if err != nil {
 		return nil, fmt.Errorf("create user: %w", err)
 	}
+
 	return &pb.TransferUserResponse{
 		UserId:    userId,
 		Signature: "transferred-sig",
