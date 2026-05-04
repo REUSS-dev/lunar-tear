@@ -4,6 +4,8 @@ import (
 	"flag"
 	"log"
 
+	"github.com/google/uuid"
+
 	"lunar-tear/server/internal/auth"
 	"lunar-tear/server/internal/database"
 	"lunar-tear/server/internal/model"
@@ -51,14 +53,11 @@ func main() {
 		log.Fatalf("init auth store: %v", err)
 	}
 
-	// Auth user
+	// Auth user check
 
-	authUser, err := authStore.CreateUser(*name, *password)
-	if err == auth.ErrUserExists {
+	userExists := authStore.UserExists(*name)
+	if userExists {
 		log.Fatal("Username is already taken")
-	}
-	if err != nil {
-		log.Fatalf("Register auth account: %v", err)
 	}
 
 	// lunar-tear user
@@ -73,15 +72,21 @@ func main() {
 		userPlatform.PlatformType = 1
 	}
 
-	id, err := userStore.CreateUser("mock-uuid", userPlatform)
+	userUuid := uuid.New().String()
+	id, err := userStore.CreateUser(userUuid, userPlatform)
 
 	if err == nil {
 		log.Printf("Registered user %d in database successfully", id)
 	} else {
-		log.Fatalf("Registered user in database: %v", err)
+		log.Fatalf("Register user in database: %v", err)
 	}
 
 	// Bind
+
+	authUser, err := authStore.CreateUser(*name, *password)
+	if err != nil {
+		log.Fatalf("Register auth account: %v", err)
+	}
 
 	err = userStore.SetFacebookId(id, authUser.ID)
 	if err == nil {
